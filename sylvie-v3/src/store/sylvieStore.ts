@@ -239,10 +239,22 @@ export const useSylvieStore = create<SylvieState & SylvieActions>()(
         // Actions MCP
         connectMCPServer: async (serverConfig: MCPServerConfig) => {
           try {
-            // TODO: Implémenter la connexion MCP réelle
-            set((state) => ({
-              mcpServers: [...state.mcpServers, { ...serverConfig, status: 'connected' }]
-            }), false, 'connectMCPServer');
+            // Appel API REST pour connecter le serveur MCP
+            const response = await fetch('/api/mcp/connect', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(serverConfig),
+            });
+            const data = await response.json();
+            if (response.ok && data.connected) {
+              set((state) => ({
+                mcpServers: [...state.mcpServers, { ...serverConfig, status: 'connected', tools: data.tools }]
+              }), false, 'connectMCPServer');
+            } else {
+              set((state) => ({
+                mcpServers: [...state.mcpServers, { ...serverConfig, status: 'error' }]
+              }), false, 'connectMCPServer');
+            }
           } catch (error) {
             console.error('Erreur connexion MCP:', error);
             set((state) => ({
@@ -259,10 +271,22 @@ export const useSylvieStore = create<SylvieState & SylvieActions>()(
 
         executeAction: async (action: WorkspaceAction) => {
           try {
-            // TODO: Implémenter l'exécution d'actions réelles
-            console.log('Exécution action:', action);
+            // Appel API REST pour exécuter une action MCP
+            const response = await fetch('/api/mcp/execute', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(action),
+            });
+            const data = await response.json();
+            if (response.ok && data.success) {
+              // Optionnel : mettre à jour le store ou afficher le résultat
+              console.log('Résultat action MCP:', data.result);
+              // Vous pouvez ajouter ici une mutation d’état pour afficher le résultat dans l’UI
+            } else {
+              console.error('Erreur action MCP:', data.error || 'Réponse non valide');
+            }
           } catch (error) {
-            console.error('Erreur exécution action:', error);
+            console.error('Erreur exécution action MCP:', error);
           }
         },
       }),
