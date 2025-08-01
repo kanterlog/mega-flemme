@@ -1,0 +1,175 @@
+# 🐳 KanterMator + Sylvie - Docker Infrastructure
+# Phase 5.1 - Containerisation complète
+
+version: '3.8'
+
+services:
+  # 🗄️ Base de données PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: kantermator_db
+    environment:
+      POSTGRES_DB: kantermator
+      POSTGRES_USER: kantermator_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - kantermator_network
+    restart: unless-stopped
+
+  # 📊 pgAdmin pour administration DB
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: kantermator_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "5050:80"
+    networks:
+      - kantermator_network
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # 🔴 Redis pour Celery et cache
+  redis:
+    image: redis:7-alpine
+    container_name: kantermator_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - kantermator_network
+    restart: unless-stopped
+
+  # 🤖 KanterMator Backend
+  kantermator:
+    build: 
+      context: .
+      dockerfile: Dockerfile.kantermator
+    container_name: kantermator_backend
+    environment:
+      - DATABASE_URL=postgresql://kantermator_user:${DB_PASSWORD}@postgres:5432/kantermator
+      - REDIS_URL=redis://redis:6379/0
+      - GOOGLE_CREDENTIALS_PATH=/app/credentials/google-credentials.json
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./credentials:/app/credentials:ro
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"
+    networks:
+      - kantermator_network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # 💬 Sylvie Agent Conversationnel
+  sylvie:
+    build:
+      context: .
+      dockerfile: Dockerfile.sylvie
+    container_name: sylvie_agent
+    environment:
+      - DATABASE_URL=postgresql://kantermator_user:${DB_PASSWORD}@postgres:5432/kantermator
+      - REDIS_URL=redis://redis:6379/1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - KANTERMATOR_API_URL=http://kantermator:8000
+    volumes:
+      - ./logs:/app/logs
+    ports:
+      - "8001:8000"
+    networks:
+      - kantermator_network
+    depends_on:
+      - postgres
+      - redis
+      - kantermator
+    restart: unless-stopped
+
+  # ⚙️ Celery Worker pour tâches d'arrière-plan
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.kantermator
+    container_name: kantermator_worker
+    command: celery -A app.celery worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://kantermator_user:${DB_PASSWORD}@postgres:5432/kantermator
+      - REDIS_URL=redis://redis:6379/0
+      - GOOGLE_CREDENTIALS_PATH=/app/credentials/google-credentials.json
+    volumes:
+      - ./credentials:/app/credentials:ro
+      - ./logs:/app/logs
+    networks:
+      - kantermator_network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # 📅 Celery Beat pour planification
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.kantermator
+    container_name: kantermator_scheduler
+    command: celery -A app.celery beat --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://kantermator_user:${DB_PASSWORD}@postgres:5432/kantermator
+      - REDIS_URL=redis://redis:6379/0
+      - GOOGLE_CREDENTIALS_PATH=/app/credentials/google-credentials.json
+    volumes:
+      - ./credentials:/app/credentials:ro
+      - ./logs:/app/logs
+    networks:
+      - kantermator_network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # 🎨 Frontend React (Phase 4)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sylvie_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_KANTERMATOR_API=http://localhost:8000
+      - REACT_APP_SYLVIE_API=http://localhost:8001
+    networks:
+      - kantermator_network
+    depends_on:
+      - kantermator
+      - sylvie
+    restart: unless-stopped
+
+  # 🔍 Monitoring avec Prometheus (optionnel)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kantermator_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - kantermator_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  kantermator_network:
+    driver: bridge
