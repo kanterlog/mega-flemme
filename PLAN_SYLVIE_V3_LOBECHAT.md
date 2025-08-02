@@ -28,6 +28,13 @@ sylvie-v3/
 │   └── types/                 # Types TypeScript
 ├── packages/                  # Monorepo workspace
 │   ├── sylvie-ui/            # Design System
+
+### 🧩 1.2 - Modularisation Workspace MCP (Inspiré Workspace MCP)
+- Refactorisation backend Python en modules/services : Gmail, Drive, Docs, Calendar, Sheets, Slides, Forms, Tasks, Chat
+- Ajout decorators Python pour injection de services et gestion des scopes OAuth2
+- Centralisation des tokens, gestion multi-comptes, refresh automatique
+- Documentation exhaustive pour chaque service (API, guides, schémas)
+- Préparation du plugin system MCP côté frontend (dossier plugins/, SDK, marketplace interne)
 │   ├── sylvie-mcp/           # MCP Server
 │   └── sylvie-desktop/       # Application Electron
 └── package.json

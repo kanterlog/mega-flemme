@@ -1,11 +1,13 @@
 # 🚀 Roadmap Sylvie v3.0 - Implémentation Progressive
 
 ## 📋 Phase 1 : Fondation Stable ✅
-- [x] Création projet `sylvie-v3-clean` avec Next.js 14
-- [x] Build system 100% fonctionnel
-- [x] Dependencies core installées (Ant Design, Zustand, Framer Motion)
-- [x] Homepage avec branding Sylvie
-- [x] Serveur de développement (en cours port 3011)
+
+## 🧩 Nouvelle Modularisation Workspace MCP (Inspiré Workspace MCP)
+- [ ] Refactorisation backend Python en modules/services : Gmail, Drive, Docs, Calendar, Sheets, Slides, Forms, Tasks, Chat
+- [ ] Ajout decorators Python pour injection de services et gestion des scopes OAuth2
+- [ ] Centralisation des tokens, gestion multi-comptes, refresh automatique
+- [ ] Documentation exhaustive pour chaque service (API, guides, schémas)
+- [ ] Préparation du plugin system MCP côté frontend (dossier plugins/, SDK, marketplace interne)
 
 ## 🎯 Phase 2 : Interface Core (Semaine 1)
 ### 2.1 Store Zustand ⏳
@@ -33,11 +35,13 @@ interface SylvieState {
 - Barre d'outils
 
 ## 🔌 Phase 3 : Intégration MCP (Semaine 2)
-### 3.1 Google Workspace MCP ⏳
-- Adapter le code `google_workspace_mcp_v23_simplified.py`
-- Client JavaScript pour MCP
-- Authentication Google OAuth2
-- Services : Gmail, Calendar, Drive, Sheets
+
+## 🧩 Nouvelle Modularisation Workspace MCP (Inspiré Workspace MCP)
+- [ ] Refactorisation backend Python en modules/services : Gmail, Drive, Docs, Calendar, Sheets, Slides, Forms, Tasks, Chat
+- [ ] Ajout decorators Python pour injection de services et gestion des scopes OAuth2
+- [ ] Centralisation des tokens, gestion multi-comptes, refresh automatique
+- [ ] Documentation exhaustive pour chaque service (API, guides, schémas)
+- [ ] Préparation du plugin system MCP côté frontend (dossier plugins/, SDK, marketplace interne)
 
 ### 3.2 Agent Sylvie ⏳
 - Moteur de requêtes intelligentes
@@ -53,42 +57,23 @@ interface SylvieState {
 - Historique complet
 
 ### 4.2 Chain of Thought ⏳
-- Visualisation du raisonnement
-- Étapes de résolution
-- Tracabilité des décisions
-- Debug mode
 
 ### 4.3 Animations & UX ⏳
-- Transitions fluides Framer Motion
-- Loading states
-- Micro-interactions
-- Responsive design
 
 ## 📊 Phase 5 : Analytics & Monitoring (Semaine 5-6)
-### 5.1 Métriques Utilisateur ⏳
-- Temps de réponse
-- Types de requêtes
-- Succès/Échecs
-- Patterns d'usage
+
+### 3.1 Google Workspace MCP ⏳
+- Adapter le code `google_workspace_mcp_v23_simplified.py` en modules/services
+- Client JavaScript pour MCP, support plugins MCP
+- Authentication Google OAuth2 avancée (multi-comptes, scopes, refresh)
+- Services : Gmail, Calendar, Drive, Sheets, Docs, Slides, Forms, Tasks, Chat
 
 ### 5.2 Health Dashboard ⏳
-- Status des services MCP
-- Quotas API Google
-- Performance monitoring
-- Error tracking
 
 ## 🛡️ Phase 6 : Production (Semaine 7-8)
 ### 6.1 Sécurité ⏳
-- Authentication robuste
-- Rate limiting
-- Validation des entrées
-- HTTPS obligatoire
 
 ### 6.2 Déploiement ⏳
-- Docker containers
-- CI/CD pipeline
-- Monitoring production
-- Backup strategies
 
 ## 📱 Phase 7 : Extensions (Semaine 9-12)
 ### 7.1 Desktop App ⏳

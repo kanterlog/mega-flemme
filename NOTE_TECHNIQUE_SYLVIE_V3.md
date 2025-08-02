@@ -28,6 +28,13 @@ APIs: Google Workspace Suite
 Authentication: OAuth2 Google
 ```
 
+### 🧩 Modularisation Workspace MCP (Inspiré Workspace MCP)
+- Backend Python refactorisé en modules/services : Gmail, Drive, Docs, Calendar, Sheets, Slides, Forms, Tasks, Chat
+- Decorators Python pour injection de services et gestion des scopes OAuth2
+- Centralisation des tokens, gestion multi-comptes, refresh automatique
+- Documentation exhaustive pour chaque service (API, guides, schémas)
+- Préparation du plugin system MCP côté frontend (dossier plugins/, SDK, marketplace interne)
+
 ### **Architecture en Couches**
 ```
 ┌─────────────────────────────────────┐
