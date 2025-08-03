@@ -1,0 +1,8 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.1, pytest-8.4.1, pluggy-1.6.0
+rootdir: /workspaces/mega-flemme/sylvie-v3
+plugins: anyio-3.7.1, asyncio-0.21.1
+asyncio: mode=Mode.STRICT
+collected 0 items
+
+============================ no tests ran in 0.01s =============================

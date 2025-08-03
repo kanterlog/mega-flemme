@@ -1,5 +1,5 @@
 import unittest
-from app.services.calendar.api import CalendarAPI
+from app.services.calendar_api.api import CalendarAPI
 
 class TestCalendarAPI(unittest.TestCase):
     def setUp(self):

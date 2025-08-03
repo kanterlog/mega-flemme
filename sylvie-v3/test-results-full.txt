@@ -1,0 +1,150 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.1, pytest-8.4.1, pluggy-1.6.0
+rootdir: /workspaces/mega-flemme
+plugins: anyio-3.7.1, asyncio-0.21.1
+asyncio: mode=Mode.STRICT
+collected 42 items / 8 errors
+
+==================================== ERRORS ====================================
+________________ ERROR collecting app/services/test_chat_api.py ________________
+/usr/local/py-utils/venvs/pytest/lib/python3.12/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+/usr/local/py-utils/venvs/pytest/lib/python3.12/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+/usr/local/py-utils/venvs/pytest/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:186: in exec_module
+    exec(co, module.__dict__)
+../app/services/test_chat_api.py:2: in <module>
+    from app.services.chat.api import ChatAPI
+E     File "/workspaces/mega-flemme/app/services/chat/api.py", line 1
+E       def send_message(self, space_id, message_body):
+E   IndentationError: unexpected indent
+_______________ ERROR collecting app/services/test_tasks_api.py ________________
+/usr/local/py-utils/venvs/pytest/lib/python3.12/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+/usr/local/py-utils/venvs/pytest/lib/python3.12/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+/usr/local/py-utils/venvs/pytest/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:186: in exec_module
+    exec(co, module.__dict__)
+../app/services/test_tasks_api.py:2: in <module>
+    from app.services.tasks.api import TasksAPI
+E     File "/workspaces/mega-flemme/app/services/tasks/api.py", line 1
+E       def create_task(self, task_list_id, task_body):
+E   IndentationError: unexpected indent
+______________ ERROR collecting test_google_workspace_mcp_v23.py _______________
+/usr/local/py-utils/venvs/pytest/lib/python3.12/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+/usr/local/py-utils/venvs/pytest/lib/python3.12/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+/usr/local/py-utils/venvs/pytest/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:186: in exec_module
+    exec(co, module.__dict__)
+../test_google_workspace_mcp_v23.py:14: in <module>
+    from app.services.google_workspace_mcp_v23 import (
+E     File "/workspaces/mega-flemme/app/services/google_workspace_mcp_v23.py", line 94
+E       messages = results.get("messages", [])
+E   IndentationError: unexpected indent
+_________________ ERROR collecting test_interactive_sylvie.py __________________
+ImportError while importing test module '/workspaces/mega-flemme/test_interactive_sylvie.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../test_interactive_sylvie.py:7: in <module>
+    import aiohttp
+E   ModuleNotFoundError: No module named 'aiohttp'
+___________________ ERROR collecting test_sylvie_email_ai.py ___________________
+ImportError while importing test module '/workspaces/mega-flemme/test_sylvie_email_ai.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../test_sylvie_email_ai.py:9: in <module>
+    import aiohttp
+E   ModuleNotFoundError: No module named 'aiohttp'
+__________________ ERROR collecting test_sylvie_v21_final.py ___________________
+ImportError while importing test module '/workspaces/mega-flemme/test_sylvie_v21_final.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../test_sylvie_v21_final.py:8: in <module>
+    import aiohttp
+E   ModuleNotFoundError: No module named 'aiohttp'
+__________________ ERROR collecting test_sylvie_v22_final.py ___________________
+ImportError while importing test module '/workspaces/mega-flemme/test_sylvie_v22_final.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../test_sylvie_v22_final.py:15: in <module>
+    from app.services.sylvie_agent import sylvie_agent
+../app/services/sylvie_agent.py:32: in <module>
+    from app.services.hybrid_ai import hybrid_ai, TaskType
+../app/services/hybrid_ai.py:18: in <module>
+    from app.utils.config import settings
+../app/utils/config.py:10: in <module>
+    from pydantic_settings import BaseSettings
+E   ModuleNotFoundError: No module named 'pydantic_settings'
+_______________________ ERROR collecting test_system.py ________________________
+ImportError while importing test module '/workspaces/mega-flemme/test_system.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../test_system.py:14: in <module>
+    from app.services.sylvie_agent import sylvie_agent
+../app/services/sylvie_agent.py:32: in <module>
+    from app.services.hybrid_ai import hybrid_ai, TaskType
+../app/services/hybrid_ai.py:18: in <module>
+    from app.utils.config import settings
+../app/utils/config.py:10: in <module>
+    from pydantic_settings import BaseSettings
+E   ModuleNotFoundError: No module named 'pydantic_settings'
+=========================== short test summary info ============================
+ERROR ../app/services/test_chat_api.py
+ERROR ../app/services/test_tasks_api.py
+ERROR ../test_google_workspace_mcp_v23.py
+ERROR ../test_interactive_sylvie.py
+ERROR ../test_sylvie_email_ai.py
+ERROR ../test_sylvie_v21_final.py
+ERROR ../test_sylvie_v22_final.py
+ERROR ../test_system.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 8 errors during collection !!!!!!!!!!!!!!!!!!!!
+======================== 2 warnings, 8 errors in 12.98s ========================

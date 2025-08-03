@@ -1,13 +1,3 @@
-    def send_message(self, space_id, message_body):
-        """
-        Envoie un message dans un espace Google Chat.
-        """
-        try:
-            result = self.service.spaces().messages().create(parent=f'spaces/{space_id}', body=message_body).execute()
-            return result
-        except Exception as e:
-            print(f"Erreur send_message: {e}")
-            return None
 # API Métier Chat MCP - Sylvie v3
 # Implémentation concrète (exemple avec google-api-python-client)
 
@@ -18,6 +8,17 @@ from app.services.scopes import SCOPES
 class ChatAPI:
     def __init__(self, account_email):
         self.token_manager = TokenManagerStorage()
+
+    def send_message(self, space_id, message_body):
+        """
+        Envoie un message dans un espace Google Chat.
+        """
+        try:
+            result = self.service.spaces().messages().create(parent=f'spaces/{space_id}', body=message_body).execute()
+            return result
+        except Exception as e:
+            print(f"Erreur send_message: {e}")
+            return None
         self.token = self.token_manager.get_token(account_email)
         self.service = self._get_service()
 

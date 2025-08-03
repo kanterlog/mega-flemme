@@ -1,3 +1,7 @@
+class TasksAPI:
+    def __init__(self, account_email):
+        self.token_manager = TokenManagerStorage()
+
     def create_task(self, task_list_id, task_body):
         """
         Crée une tâche dans une liste Google Tasks.

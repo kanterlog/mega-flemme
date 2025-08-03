@@ -1,5 +1,24 @@
 'use client';
+import { create } from 'zustand';
 
+export interface Message {
+  id: number;
+  sender: string;
+  content: string;
+  timestamp: string;
+}
+
+export interface SylvieStoreState {
+  messages: Message[];
+  addMessage: (msg: Message) => void;
+  clearMessages: () => void;
+}
+
+export const useSylvieStore = create<SylvieStoreState>((set) => ({
+  messages: [],
+  addMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
+  clearMessages: () => set({ messages: [] }),
+}));
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';

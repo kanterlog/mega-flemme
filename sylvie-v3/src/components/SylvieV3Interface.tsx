@@ -26,6 +26,8 @@ const { Text, Title } = Typography;
 export function SylvieV3Interface() {
   const [inputValue, setInputValue] = useState('');
   const [showBranchModal, setShowBranchModal] = useState(false);
+  const [branchMessageId, setBranchMessageId] = useState<string|null>(null);
+  const [branchInput, setBranchInput] = useState('');
   
   const {
     messages,
@@ -38,6 +40,8 @@ export function SylvieV3Interface() {
     toggleSidebar,
     createConversation,
     setActiveConversation,
+    createBranch,
+    switchToBranch,
   } = useSylvieStore();
 
   const handleSendMessage = async () => {
@@ -105,6 +109,25 @@ export function SylvieV3Interface() {
       danger: true,
     },
   ];
+
+  // Récupérer les branches liées à la conversation courante
+  const currentConversation = conversations.find(c => c.id === activeConversationId);
+  const branches = conversations.filter(c => c.parentId === activeConversationId);
+
+  const handleOpenBranchModal = (messageId: string) => {
+    setBranchMessageId(messageId);
+    setBranchInput('');
+    setShowBranchModal(true);
+  };
+
+  const handleCreateBranch = () => {
+    if (branchMessageId && branchInput.trim()) {
+      createBranch(branchMessageId, branchInput);
+      setShowBranchModal(false);
+      setBranchMessageId(null);
+      setBranchInput('');
+    }
+  };
 
   return (
     <Layout className="min-h-screen">
@@ -254,8 +277,8 @@ export function SylvieV3Interface() {
                         type="text"
                         size="small"
                         icon={<BranchesOutlined />}
-                        onClick={() => setShowBranchModal(true)}
-                        title="Créer une branche"
+                        onClick={() => handleOpenBranchModal(message.id)}
+                        title="Créer une branche à partir de ce message"
                       />
                     </div>
                   </Card>
@@ -320,10 +343,41 @@ export function SylvieV3Interface() {
         onCancel={() => setShowBranchModal(false)}
         footer={null}
       >
-        <Text>
-          Fonctionnalité de branchement en cours de développement...
-        </Text>
+        <Text strong>À partir de ce message, créez une nouvelle branche :</Text>
+        <TextArea
+          value={branchInput}
+          onChange={e => setBranchInput(e.target.value)}
+          placeholder="Votre premier message dans la branche..."
+          autoSize={{ minRows: 1, maxRows: 3 }}
+          className="mt-2 mb-2"
+        />
+        <Button
+          type="primary"
+          onClick={handleCreateBranch}
+          disabled={!branchInput.trim()}
+        >
+          Créer la branche
+        </Button>
       </Modal>
+
+      {branches.length > 0 && (
+        <div className="p-4 border-t border-gray-200 bg-sylvie-50">
+          <Text strong>Branches de cette conversation :</Text>
+          <Space direction="vertical" className="mt-2">
+            {branches.map(branch => (
+              <Button
+                key={branch.id}
+                type={branch.id === activeConversationId ? 'primary' : 'default'}
+                onClick={() => switchToBranch(branch.id)}
+                icon={<BranchesOutlined />}
+                className="w-full text-left"
+              >
+                {branch.title}
+              </Button>
+            ))}
+          </Space>
+        </div>
+      )}
     </Layout>
   );
 }
