@@ -119,9 +119,9 @@ const ChatInterface: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: '#f8f9fa' }}>
-      <div style={{ width: 260, background: '#fff', borderRight: '1px solid #eee', padding: 16 }}>
-        <div style={{ fontWeight: 'bold', marginBottom: 12 }}>Conversations</div>
+    <div style={{ display: 'flex', height: '100vh', background: '#181a20', color: '#e3e3e3' }}>
+      <div style={{ width: 260, background: '#23242b', borderRight: '1px solid #222', padding: 16 }}>
+        <div style={{ fontWeight: 'bold', marginBottom: 12, color: '#e3e3e3' }}>Conversations</div>
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {conversations.map(conv => (
             <li key={conv.id}>
@@ -129,14 +129,15 @@ const ChatInterface: React.FC = () => {
                 onClick={() => handleSelectConversation(conv.id)}
                 style={{
                   width: '100%',
-                  background: conv.id === currentConvId ? '#4285f4' : '#f0f2f5',
-                  color: conv.id === currentConvId ? '#fff' : '#202124',
+                  background: conv.id === currentConvId ? '#4285f4' : '#23242b',
+                  color: conv.id === currentConvId ? '#fff' : '#e3e3e3',
                   border: 'none',
                   borderRadius: 6,
                   padding: '8px 12px',
                   marginBottom: 6,
                   fontWeight: 'bold',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  boxShadow: conv.id === currentConvId ? '0 0 0 2px #4285f4' : 'none'
                 }}
               >
                 {conv.title}
@@ -146,12 +147,12 @@ const ChatInterface: React.FC = () => {
         </ul>
         <button
           onClick={handleNewConversation}
-          style={{ background: '#34a853', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontWeight: 'bold', fontSize: 14, marginTop: 12, width: '100%' }}
+          style={{ background: '#34a853', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontWeight: 'bold', fontSize: 14, marginTop: 12, width: '100%', boxShadow: '0 0 0 2px #34a85333' }}
         >
           Nouvelle conversation
         </button>
       </div>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#181a20' }}>
         <div style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
           {currentConv && currentConv.messages.length === 0 && (
             <div style={{ color: '#888', textAlign: 'center', marginTop: 40 }}>
@@ -160,31 +161,31 @@ const ChatInterface: React.FC = () => {
           )}
           {currentConv && currentConv.messages.map(msg => (
             <div key={msg.id} style={{ marginBottom: 16, textAlign: msg.sender === 'Utilisateur' ? 'right' : 'left' }}>
-              <div style={{ display: 'inline-block', background: msg.sender === 'Utilisateur' ? '#4285f4' : '#fff', color: msg.sender === 'Utilisateur' ? '#fff' : '#202124', borderRadius: 8, padding: '8px 16px', maxWidth: '70%' }}>
+              <div style={{ display: 'inline-block', background: msg.sender === 'Utilisateur' ? '#4285f4' : '#23242b', color: msg.sender === 'Utilisateur' ? '#fff' : '#e3e3e3', borderRadius: 8, padding: '8px 16px', maxWidth: '70%', boxShadow: msg.sender === 'Utilisateur' ? '0 0 0 2px #4285f4' : 'none' }}>
                 <strong>{msg.sender}</strong> <span style={{ fontSize: 12, color: '#888' }}>{msg.timestamp}</span>
                 <div>{msg.content}</div>
               </div>
             </div>
           ))}
         </div>
-        <div style={{ padding: 16, background: '#fff', borderTop: '1px solid #eee', display: 'flex', gap: 8 }}>
+        <div style={{ padding: 16, background: '#23242b', borderTop: '1px solid #222', display: 'flex', gap: 8 }}>
           <input
             type="text"
             value={message}
             onChange={e => setMessage(e.target.value)}
             placeholder="Écrivez votre message..."
-            style={{ flex: 1, padding: 8, borderRadius: 8, border: '1px solid #ccc', fontSize: 16 }}
+            style={{ flex: 1, padding: 8, borderRadius: 8, border: '1px solid #444', fontSize: 16, background: '#181a20', color: '#e3e3e3' }}
             onKeyDown={e => { if (e.key === 'Enter') handleSend(); }}
           />
           <button
             onClick={handleSend}
-            style={{ background: '#4285f4', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 24px', fontWeight: 'bold', fontSize: 16 }}
+            style={{ background: '#4285f4', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 24px', fontWeight: 'bold', fontSize: 16, boxShadow: '0 0 0 2px #4285f4' }}
           >
             Envoyer
           </button>
           <button
             onClick={handleResetConversation}
-            style={{ background: '#ea4335', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontWeight: 'bold', fontSize: 14, marginLeft: 8 }}
+            style={{ background: '#ea4335', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontWeight: 'bold', fontSize: 14, marginLeft: 8, boxShadow: '0 0 0 2px #ea4335' }}
           >
             Réinitialiser
           </button>
