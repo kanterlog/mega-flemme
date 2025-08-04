@@ -29,10 +29,12 @@ interface SylvieState {
 - `Sidebar` : Navigation conversations
 
 ### 2.3 Layout Principal ⏳
-- Header avec logo Sylvie
-- Sidebar conversations
-- Zone chat principale
-- Barre d'outils
+
+### 2.4 Système de bulles raccourci dynamiques ⏳
+- Affichage des actions principales sous forme de bulles cliquables dans le chat
+- Analyse de l’historique d’usage pour proposer les bulles les plus pertinentes
+- Mode édition permettant à l’utilisateur de personnaliser ses bulles (ajout, suppression, réorganisation)
+- Stockage des préférences et historique en localStorage et backend
 
 ## 🔌 Phase 3 : Intégration MCP (Semaine 2)
 

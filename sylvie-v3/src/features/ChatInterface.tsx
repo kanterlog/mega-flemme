@@ -10,6 +10,7 @@ import { useConversations, Message as ConversationMessage } from './hooks/useCon
 import { THEME } from '../constants/theme';
 import { useShortcuts } from './hooks/useShortcuts';
 import useLocalStorage from './hooks/useLocalStorage';
+import SplashScreen from './SplashScreen';
 
 // Constantes de validation centralisées
 const MESSAGE_MAX_LENGTH = 1000;
@@ -60,6 +61,9 @@ const resetButtonStyle = {
  */
 
 const ChatInterface: React.FC = () => {
+  // SplashScreen state
+  const [showSplash, setShowSplash] = useState(true);
+  const [networkError, setNetworkError] = useState(false);
   /**
    * Message en cours d'édition par l'utilisateur.
    */
@@ -199,35 +203,103 @@ const ChatInterface: React.FC = () => {
     flexDirection: (leftHanded ? 'row-reverse' : 'row') as React.CSSProperties['flexDirection'],
   }), [leftHanded]);
 
+  const mainChatStyle = useMemo(() => ({ flex: 1, display: 'flex', flexDirection: 'column', background: THEME.colors.background }), []);
+
+  const conversationsListMemo = useMemo(() => (
+    <ConversationsList
+      conversations={conversations}
+      currentConvId={currentConvId}
+      onSelect={handleSelectConversation}
+      onNew={handleNewConversation}
+      leftHanded={leftHanded}
+    />
+  ), [conversations, currentConvId, handleSelectConversation, handleNewConversation, leftHanded]);
+
+  const handleShortcutClick = useCallback((s) => {
+    setMessage(s.message);
+    if (s.key) incrementUsage(s.key);
+    setToast({ message: `Raccourci « ${s.label} » utilisé` });
+  }, [incrementUsage]);
+
+  const handleAddClick = useCallback(() => setEditModalOpen(true), []);
+
+  const shortcutManagerMemo = useMemo(() => (
+    <ShortcutManager
+      shortcuts={allShortcuts}
+      compact={compact}
+      onShortcutClick={handleShortcutClick}
+      onAddClick={handleAddClick}
+    />
+  ), [allShortcuts, compact, handleShortcutClick, handleAddClick]);
+
+  // Styles et listes calculés en dehors du JSX
+  const messagesStyle = useMemo(() => ({ flex: 1, overflowY: 'auto', padding: compact ? '8px 4px' : '18px 32px', background: THEME.colors.background, borderBottom: `1px solid ${THEME.colors.card}` } as React.CSSProperties), [compact]);
+  const messageBubbles = useMemo(() => currentConv?.messages.map((msg: ConversationMessage) => (
+    <MessageBubble key={msg.id} msg={msg} />
+  )), [currentConv?.messages]);
+  const suggestionsStyle = useMemo(() => ({ display: 'flex', gap: 10, margin: '12px 0 0 0', flexWrap: 'wrap' } as React.CSSProperties), []);
+  const suggestionButtons = useMemo(() => suggestions.map((sugg: string, idx: number) => (
+    <button
+      key={sugg + idx}
+      onClick={() => setMessage(sugg)}
+      style={suggestionButtonStyle}
+      aria-label={`Suggestion : ${sugg}`}
+    >{sugg}</button>
+  )), [suggestions]);
+  const actionButtonsStyle = useMemo(() => ({ display: 'flex', gap: 12, marginTop: 8 } as React.CSSProperties), []);
+  const toastStyle = useMemo(() => ({
+    pointerEvents: 'none',
+    position: 'fixed',
+    bottom: 24,
+    left: '50%',
+    minWidth: 180,
+    maxWidth: 420,
+    background: toast?.type === 'error' ? THEME.colors.error : THEME.colors.success,
+    color: '#fff',
+    padding: toast?.action ? '12px 24px 12px 18px' : '12px 24px',
+    borderRadius: 8,
+    fontWeight: 'bold',
+    fontSize: 15,
+    boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+    zIndex: 2000,
+    opacity: toast ? 1 : 0,
+    transition: toast ? 'opacity 0.3s, transform 0.4s' : 'opacity 0.3s',
+    display: toast ? 'flex' : 'none',
+    alignItems: 'center',
+    gap: 16,
+    cursor: toast?.action ? 'pointer' : 'default',
+    userSelect: 'none',
+    transform: toast ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(40px)',
+  } as React.CSSProperties), [toast]);
+
+  useEffect(() => {
+    // Vérifie la connexion Internet au chargement du splash
+    if (showSplash) {
+      fetch('https://www.google.com', { method: 'HEAD', mode: 'no-cors' })
+        .then(() => setNetworkError(false))
+        .catch(() => setNetworkError(true));
+    }
+  }, [showSplash]);
+
+  if (showSplash) {
+    return (
+      <SplashScreen
+        duration={1800}
+        onFinish={() => setShowSplash(false)}
+        error={networkError}
+        errorImageUrl={networkError ? '/no-internet.png' : undefined}
+        errorText={networkError ? 'Connexion Internet indisponible' : undefined}
+      />
+    );
+  }
   return (
     <div style={containerStyle}>
       {/* Sidebar conversations */}
-      {/* React.memo pour ConversationsList */}
-      {React.useMemo(() => (
-        <ConversationsList
-          conversations={conversations}
-          currentConvId={currentConvId}
-          onSelect={handleSelectConversation}
-          onNew={handleNewConversation}
-          leftHanded={leftHanded}
-        />
-      ), [conversations, currentConvId, handleSelectConversation, handleNewConversation, leftHanded])}
+      {conversationsListMemo}
       {/* Main chat area */}
-      <div style={useMemo(() => ({ flex: 1, display: 'flex', flexDirection: 'column', background: THEME.colors.background }), [])}>
+      <div style={mainChatStyle}>
         {/* Shortcut bubbles */}
-        {/* React.memo pour ShortcutManager */}
-        {React.useMemo(() => (
-          <ShortcutManager
-            shortcuts={allShortcuts}
-            compact={compact}
-            onShortcutClick={useCallback((s) => {
-              setMessage(s.message);
-              if (s.key) incrementUsage(s.key);
-              setToast({ message: `Raccourci « ${s.label} » utilisé` });
-            }, [incrementUsage])}
-            onAddClick={useCallback(() => setEditModalOpen(true), [])}
-          />
-        ), [allShortcuts, compact, incrementUsage])}
+        {shortcutManagerMemo}
         {/* Modal édition/suppression raccourci */}
         <ShortcutModal
           open={editModalOpen}
@@ -245,24 +317,14 @@ const ChatInterface: React.FC = () => {
           onClose={() => setEditModalOpen(false)}
         />
         {/* Bloc messages avec animation et auto-scroll */}
-        <div style={useMemo(() => ({ flex: 1, overflowY: 'auto', padding: compact ? '8px 4px' : '18px 32px', background: THEME.colors.background, borderBottom: `1px solid ${THEME.colors.card}` }), [compact])}>
-          {/* React.memo pour MessageBubble list */}
-          {React.useMemo(() => currentConv?.messages.map((msg: ConversationMessage) => (
-            <MessageBubble key={msg.id} msg={msg} />
-          )), [currentConv?.messages])}
+        <div style={messagesStyle}>
+          {messageBubbles}
           <div ref={messagesEndRef} />
         </div>
         {/* Suggestions et sélecteur de ton regroupés */}
         <div>
-          <div style={useMemo(() => ({ display: 'flex', gap: 10, margin: '12px 0 0 0', flexWrap: 'wrap' }), [])}>
-            {useMemo(() => suggestions.map((sugg: string, idx: number) => (
-              <button
-                key={sugg + idx}
-                onClick={() => setMessage(sugg)}
-                style={suggestionButtonStyle}
-                aria-label={`Suggestion : ${sugg}`}
-              >{sugg}</button>
-            )), [suggestions])}
+          <div style={suggestionsStyle}>
+            {suggestionButtons}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '10px 0' }}>
             <label htmlFor="toneSelect" style={{ fontSize: 14, color: THEME.colors.text, fontWeight: 'bold' }}>Ton :</label>
@@ -279,10 +341,37 @@ const ChatInterface: React.FC = () => {
             </select>
           </div>
         </div>
-        <div style={useMemo(() => ({ display: 'flex', gap: 12, marginTop: 8 }), [])}>
+        {/* Zone de saisie du message utilisateur */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '16px 0' }}>
+          <input
+            type="text"
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey && message.trim()) {
+                e.preventDefault();
+                handleSend();
+              }
+            }}
+            placeholder="Tapez votre message..."
+            style={{
+              flex: 1,
+              background: THEME.colors.card,
+              color: THEME.colors.text,
+              border: `1px solid ${THEME.colors.border}`,
+              borderRadius: 8,
+              padding: '10px 16px',
+              fontSize: 16,
+              marginRight: 8,
+            }}
+            maxLength={MESSAGE_MAX_LENGTH}
+            aria-label="Saisir un message"
+            autoFocus
+          />
           <button
             onClick={handleSend}
             style={sendButtonStyle}
+            disabled={!message.trim()}
           >
             Envoyer
           </button>
@@ -297,30 +386,7 @@ const ChatInterface: React.FC = () => {
         <div
           role="alert"
           aria-live="assertive"
-          style={useMemo(() => ({
-            pointerEvents: 'none',
-            position: 'fixed',
-            bottom: 24,
-            left: '50%',
-            minWidth: 180,
-            maxWidth: 420,
-            background: toast?.type === 'error' ? THEME.colors.error : THEME.colors.success,
-            color: '#fff',
-            padding: toast?.action ? '12px 24px 12px 18px' : '12px 24px',
-            borderRadius: 8,
-            fontWeight: 'bold',
-            fontSize: 15,
-            boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-            zIndex: 2000,
-            opacity: toast ? 1 : 0,
-            transition: toast ? 'opacity 0.3s, transform 0.4s' : 'opacity 0.3s',
-            display: toast ? 'flex' : 'none',
-            alignItems: 'center',
-            gap: 16,
-            cursor: toast?.action ? 'pointer' : 'default',
-            userSelect: 'none',
-            transform: toast ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(40px)',
-          }), [toast])}
+          style={toastStyle}
           tabIndex={toast ? 0 : -1}
         >
           {toast && (
